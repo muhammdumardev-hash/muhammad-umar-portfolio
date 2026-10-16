@@ -77,6 +77,7 @@ export default function ProjectOrbitPreview({ project }: ProjectOrbitPreviewProp
         <div className="relative mx-auto flex h-48 max-w-lg items-center justify-center sm:h-56">
           <div
             aria-label="Interactive project preview. Drag horizontally or use the left and right arrow keys to rotate."
+            role="group"
             aria-roledescription="rotatable 3D preview"
             tabIndex={0}
             onPointerDown={beginDrag}
