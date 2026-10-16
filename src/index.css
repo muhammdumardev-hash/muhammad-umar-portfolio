@@ -116,3 +116,53 @@ body {
   mask-composite: exclude;
   pointer-events: none;
 }
+
+
+/* 3D rotating project carousel */
+.project-carousel-stage {
+  --project-carousel-radius: 330px;
+  position: relative;
+  height: 560px;
+  perspective: 1500px;
+  perspective-origin: 50% 45%;
+  overflow: hidden;
+  isolation: isolate;
+}
+.project-carousel-ring {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: project-carousel-rotation 32s linear infinite;
+}
+.project-carousel-stage:hover .project-carousel-ring,
+.project-carousel-stage:focus-within .project-carousel-ring {
+  animation-play-state: paused;
+}
+.project-carousel-card {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  width: 300px;
+  height: 410px;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.24);
+}
+@keyframes project-carousel-rotation {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+@media (max-width: 640px) {
+  .project-carousel-stage {
+    --project-carousel-radius: 230px;
+    height: 510px;
+    perspective: 1100px;
+  }
+  .project-carousel-card {
+    width: min(270px, 78vw);
+    height: 400px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-carousel-ring { animation: none; }
+}
