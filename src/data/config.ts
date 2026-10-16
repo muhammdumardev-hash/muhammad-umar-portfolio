@@ -108,7 +108,7 @@ export const projects: Project[] = [
     ],
     tech: ['Python', 'Pandas', 'Scikit-learn', 'Logistic Regression'],
     category: 'Machine Learning',
-    demoUrl: '',
+    demoUrl: 'https://student-drop-out-prediction-model-8urqnadxnappfds3zjzujapp.streamlit.app/',
     codeUrl: '',
     accent: '#8b5cf6',
     visual: 'ml',
