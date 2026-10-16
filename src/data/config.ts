@@ -44,6 +44,8 @@ export interface Project {
   accent: string
   /** Icon key used for illustration */
   visual: 'agent' | 'hospital' | 'ml' | 'ecommerce' | 'whatsapp'
+  /** Set to false to disable the interactive 360 preview for this project */
+  orbitPreview?: boolean
 }
 
 export const projects: Project[] = [
