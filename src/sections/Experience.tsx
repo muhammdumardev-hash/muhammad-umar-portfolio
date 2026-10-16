@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { Briefcase, Award, Heart, GraduationCap } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading'
-import { experience, certifications, education, volunteering } from '../data/config'
+import { internships, certifications, education, volunteering } from '../data/config'
 
 export default function Experience() {
   return (
@@ -12,36 +12,41 @@ export default function Experience() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="Experience & Credentials"
-          title="Internship, training & education"
-          description="Hands-on Generative AI work, formal training, and academic progress."
+          title="Internships, training & education"
+          description="Hands-on AI/ML and Generative AI experience, formal training, and academic progress."
         />
 
         <div className="grid gap-8 lg:grid-cols-2">
-          {/* Experience */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.45 }}
-            className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6"
-          >
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
-                <Briefcase size={20} />
-              </div>
-              <div>
-                <h3 className="font-semibold text-white">{experience.role}</h3>
-                <p className="text-sm text-[var(--color-text-muted)]">
-                  {experience.company} · {experience.period} ·{' '}
-                  <span className="text-[var(--color-accent)]">{experience.status}</span>
+          {/* Internships */}
+          <div className="grid gap-4">
+            {internships.map((internship, index) => (
+              <motion.div
+                key={internship.role}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.45, delay: index * 0.08 }}
+                className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6"
+              >
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
+                    <Briefcase size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white">{internship.role}</h3>
+                    <p className="text-sm text-[var(--color-text-muted)]">
+                      {internship.company} · {internship.period} ·{' '}
+                      <span className="text-[var(--color-accent)]">{internship.status}</span>
+                    </p>
+                  </div>
+                </div>
+                <p className="text-sm leading-relaxed text-[var(--color-text-muted)]">
+                  {internship.description}
                 </p>
-              </div>
-            </div>
-            <p className="text-sm leading-relaxed text-[var(--color-text-muted)]">
-              {experience.description}
-            </p>
-            <p className="mt-3 text-xs text-[var(--color-text-dim)]">{experience.certificate}</p>
-          </motion.div>
+                <p className="mt-3 text-xs text-[var(--color-text-dim)]">{internship.certificate}</p>
+              </motion.div>
+            ))}
+          </div>
 
           {/* Education */}
           <motion.div
