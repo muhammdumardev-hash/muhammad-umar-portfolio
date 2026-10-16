@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import { RotateCcw, MoveHorizontal } from 'lucide-react'
 import type { Project } from '../data/config'
 import ProjectVisual from './ProjectVisual'
@@ -40,7 +40,7 @@ export default function ProjectOrbitPreview({ project }: ProjectOrbitPreviewProp
     return () => window.cancelAnimationFrame(frame)
   }, [reducedMotion, hovered, dragging])
 
-  const beginDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+  const beginDrag = (event: PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === 'mouse' && event.button !== 0) return
     pointerX.current = event.clientX
     pointerAngle.current = angleRef.current
@@ -57,7 +57,7 @@ export default function ProjectOrbitPreview({ project }: ProjectOrbitPreviewProp
 
   const endDrag = () => setDragging(false)
 
-  const rotateByKeyboard = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const rotateByKeyboard = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
     event.preventDefault()
     const next = angleRef.current + (event.key === 'ArrowRight' ? 12 : -12)
