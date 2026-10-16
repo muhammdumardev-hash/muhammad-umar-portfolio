@@ -184,6 +184,11 @@ export const projects: Project[] = [
     accent: '#22c55e',
     visual: 'whatsapp',
   },
+
+] as const
+
+
+export const skillCategories = [
   {
     title: 'AI / ML',
     skills: [
