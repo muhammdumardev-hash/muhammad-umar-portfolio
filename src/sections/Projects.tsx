@@ -1,5 +1,4 @@
-import { useMemo, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ExternalLink, Github, Search } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading'
 import ProjectModal from '../components/ProjectModal'
@@ -12,19 +11,82 @@ export default function Projects() {
   const [filter, setFilter] = useState<ProjectCategory>('All')
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<Project | null>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [dragOffset, setDragOffset] = useState(0)
+  const [radius, setRadius] = useState(500)
+  const stageRef = useRef<HTMLDivElement>(null)
+  const ringRef = useRef<HTMLDivElement>(null)
+  const dragRef = useRef({ active: false, startX: 0, lastX: 0, moved: false })
 
   const filtered = useMemo(() => {
-    return projects.filter((p) => {
-      const matchCat = filter === 'All' || p.category === filter
-      const q = query.trim().toLowerCase()
-      const matchQ =
+    const q = query.trim().toLowerCase()
+    return projects.filter((project) => {
+      const matchCategory = filter === 'All' || project.category === filter
+      const matchQuery =
         !q ||
-        p.title.toLowerCase().includes(q) ||
-        p.shortDescription.toLowerCase().includes(q) ||
-        p.tech.some((t) => t.toLowerCase().includes(q))
-      return matchCat && matchQ
+        project.title.toLowerCase().includes(q) ||
+        project.shortDescription.toLowerCase().includes(q) ||
+        project.tech.some((tech) => tech.toLowerCase().includes(q))
+      return matchCategory && matchQuery
     })
   }, [filter, query])
+
+  const slots = Math.max(filtered.length, 3)
+  const step = 360 / slots
+  const active = filtered.length ? ((activeIndex % filtered.length) + filtered.length) % filtered.length : 0
+
+  useEffect(() => {
+    setActiveIndex(0)
+    setDragOffset(0)
+  }, [filter, query])
+
+  useEffect(() => {
+    const measure = () => {
+      const width = ringRef.current?.offsetWidth || 340
+      setRadius((width / 2 + 30) / Math.tan(Math.PI / slots))
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [slots, filtered.length])
+
+  const goTo = (index: number) => {
+    if (!filtered.length) return
+    const next = ((index % filtered.length) + filtered.length) % filtered.length
+    setActiveIndex(next)
+    setDragOffset(0)
+  }
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (filtered.length < 2 || event.button > 0) return
+    dragRef.current = {
+      active: true,
+      startX: event.clientX,
+      lastX: event.clientX,
+      moved: false,
+    }
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current.active) return
+    const dx = event.clientX - dragRef.current.startX
+    dragRef.current.lastX = event.clientX
+    if (Math.abs(dx) > 5) dragRef.current.moved = true
+    setDragOffset(dx * 0.3)
+  }
+
+  const handlePointerUp = () => {
+    if (!dragRef.current.active) return
+    const dx = dragRef.current.lastX - dragRef.current.startX
+    const didMove = dragRef.current.moved
+    dragRef.current.active = false
+    setDragOffset(0)
+    if (didMove) {
+      const turns = Math.max(1, Math.round(Math.abs(dx * 0.3) / step))
+      goTo(active - Math.sign(dx) * turns)
+    }
+  }
 
   return (
     <section id="projects" className="relative py-20 sm:py-28">
@@ -35,8 +97,7 @@ export default function Projects() {
           description="AI agents, RAG systems, and machine learning applications built with a focus on grounded responses and practical usability."
         />
 
-        {/* Filters + search */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap gap-2" role="tablist" aria-label="Project categories">
             {categories.map((cat) => (
               <button
@@ -45,11 +106,12 @@ export default function Projects() {
                 role="tab"
                 aria-selected={filter === cat}
                 onClick={() => setFilter(cat)}
-                className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition ${
-                  filter === cat
+                className={
+                  'rounded-lg px-3.5 py-1.5 text-sm font-medium transition ' +
+                  (filter === cat
                     ? 'bg-[var(--color-accent)] text-white shadow-md shadow-indigo-500/20'
-                    : 'border border-[var(--color-border)] bg-[var(--color-bg-card)] text-[var(--color-text-muted)] hover:text-white'
-                }`}
+                    : 'border border-[var(--color-border)] bg-[var(--color-bg-card)] text-[var(--color-text-muted)] hover:text-white')
+                }
               >
                 {cat}
               </button>
@@ -64,117 +126,146 @@ export default function Projects() {
               type="search"
               placeholder="Search projects…"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(event) => setQuery(event.target.value)}
               className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-card)] py-2 pl-9 pr-3 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)] focus:outline-none sm:w-56"
               aria-label="Search projects"
             />
           </div>
         </div>
 
-        {/* Grid */}
-        <AnimatePresence mode="popLayout">
-          {filtered.length === 0 ? (
-            <motion.p
-              key="empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="rounded-xl border border-dashed border-[var(--color-border)] py-16 text-center text-[var(--color-text-muted)]"
+        {filtered.length === 0 ? (
+          <p className="rounded-xl border border-dashed border-[var(--color-border)] py-16 text-center text-[var(--color-text-muted)]">
+            No projects match your filters.
+          </p>
+        ) : (
+          <>
+            <div
+              ref={stageRef}
+              className="projects-3d-stage"
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerUp}
+              aria-label="3D project carousel. Drag or swipe to rotate."
             >
-              No projects match your filters.
-            </motion.p>
-          ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((project, i) => (
-                <motion.article
-                  key={project.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ duration: 0.35, delay: i * 0.05 }}
-                  className="group flex flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] transition hover:border-[var(--color-accent)]/40 hover:shadow-lg hover:shadow-indigo-500/5"
-                >
-                  <button
-                    type="button"
-                    onClick={() => setSelected(project)}
-                    className="relative block h-36 w-full overflow-hidden text-left"
-                    aria-label={`View details: ${project.title}`}
-                  >
-                    <ProjectVisual type={project.visual} accent={project.accent} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-card)] via-transparent to-transparent opacity-80" />
-                  </button>
-
-                  <div className="flex flex-1 flex-col p-5">
-                    <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-accent)]">
-                      {project.category}
-                    </p>
-                    <h3 className="mt-1 text-base font-semibold text-white group-hover:text-[var(--color-accent-hover)]">
+              <div
+                ref={ringRef}
+                className="projects-3d-ring"
+                style={{
+                  transform:
+                    'translateZ(' +
+                    -radius +
+                    'px) rotateY(' +
+                    (-active * step + dragOffset) +
+                    'deg)',
+                  transition: dragRef.current.active ? 'none' : undefined,
+                }}
+              >
+                {filtered.map((project, index) => {
+                  const angle = index * step
+                  const distance = Math.abs((((angle - active * step) % 360) + 540) % 360 - 180)
+                  const isActive = index === active
+                  return (
+                    <article
+                      key={project.id}
+                      className={'projects-3d-card' + (isActive ? ' is-active' : '')}
+                      style={{
+                        transform: 'rotateY(' + angle + 'deg) translateZ(' + radius + 'px)',
+                        opacity: Math.max(0.32, 1 - distance / (step * 1.8)),
+                        zIndex: isActive ? 2 : 1,
+                        ['--project-accent' as string]: project.accent,
+                      }}
+                      onClick={(event) => {
+                        if (!isActive) {
+                          event.preventDefault()
+                          goTo(index)
+                        }
+                      }}
+                      aria-label={project.title}
+                    >
                       <button
                         type="button"
-                        onClick={() => setSelected(project)}
-                        className="text-left focus-visible:underline"
+                        className="projects-3d-visual"
+                        onClick={() => {
+                          if (isActive) setSelected(project)
+                          else goTo(index)
+                        }}
+                        aria-label={isActive ? 'View details: ' + project.title : 'Select ' + project.title}
+                        tabIndex={isActive ? 0 : -1}
                       >
-                        {project.title}
+                        <ProjectVisual type={project.visual} accent={project.accent} />
+                        <span className="projects-3d-visual-shade" />
                       </button>
-                    </h3>
-                    <p className="mt-2 flex-1 text-sm leading-relaxed text-[var(--color-text-muted)]">
-                      {project.shortDescription}
-                    </p>
 
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {project.tech.slice(0, 4).map((t) => (
-                        <span
-                          key={t}
-                          className="rounded border border-[var(--color-border)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--color-text-dim)]"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                      {project.tech.length > 4 && (
-                        <span className="rounded border border-[var(--color-border)] px-1.5 py-0.5 text-[10px] text-[var(--color-text-dim)]">
-                          +{project.tech.length - 4}
-                        </span>
-                      )}
-                    </div>
+                      <div className="projects-3d-content">
+                        <span className="projects-3d-category">{project.category}</span>
+                        <h3>{project.title}</h3>
+                        <p className="projects-3d-description">{project.shortDescription}</p>
 
-                    <div className="mt-4 flex flex-wrap gap-2 border-t border-[var(--color-border-subtle)] pt-4">
-                      <button
-                        type="button"
-                        onClick={() => setSelected(project)}
-                        className="text-xs font-medium text-[var(--color-accent)] hover:underline"
-                      >
-                        Details →
-                      </button>
-                      <div className="ml-auto flex gap-2">
-                        {project.demoUrl ? (
-                          <a
-                            href={project.demoUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 rounded-md border border-[var(--color-border)] px-2 py-1 text-xs text-[var(--color-text-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                        <div className="projects-3d-tags">
+                          {project.tech.slice(0, 4).map((tech) => (
+                            <span key={tech}>{tech}</span>
+                          ))}
+                          {project.tech.length > 4 ? <span>+{project.tech.length - 4}</span> : null}
+                        </div>
+
+                        <div className="projects-3d-actions">
+                          <button
+                            type="button"
+                            className="projects-3d-details"
+                            onClick={() => {
+                              if (isActive) setSelected(project)
+                              else goTo(index)
+                            }}
                           >
-                            <ExternalLink size={12} /> Demo
-                          </a>
-                        ) : null}
-                        {project.codeUrl ? (
-                          <a
-                            href={project.codeUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 rounded-md border border-[var(--color-border)] px-2 py-1 text-xs text-[var(--color-text-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
-                          >
-                            <Github size={12} /> Code
-                          </a>
-                        ) : null}
+                            Details <span aria-hidden="true">→</span>
+                          </button>
+                          <div className="projects-3d-links">
+                            {project.demoUrl ? (
+                              <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" tabIndex={isActive ? 0 : -1}>
+                                <ExternalLink size={12} /> Demo
+                              </a>
+                            ) : null}
+                            {project.codeUrl ? (
+                              <a href={project.codeUrl} target="_blank" rel="noopener noreferrer" tabIndex={isActive ? 0 : -1}>
+                                <Github size={12} /> Code
+                              </a>
+                            ) : null}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </motion.article>
+                    </article>
+                  )
+                })}
+              </div>
+            </div>
+
+            <div className="projects-3d-navigation" aria-label="Carousel controls">
+              <button type="button" onClick={() => goTo(active - 1)} aria-label="Previous project">
+                ←
+              </button>
+              <span className="projects-3d-count" aria-live="polite">
+                {active + 1} / {filtered.length}
+              </span>
+              <button type="button" onClick={() => goTo(active + 1)} aria-label="Next project">
+                →
+              </button>
+            </div>
+
+            <div className="projects-3d-dots" aria-label="Choose a project">
+              {filtered.map((project, index) => (
+                <button
+                  key={project.id}
+                  type="button"
+                  aria-label={'Go to ' + project.title}
+                  aria-current={index === active ? 'true' : undefined}
+                  onClick={() => goTo(index)}
+                />
               ))}
             </div>
-          )}
-        </AnimatePresence>
+            <p className="projects-3d-hint">Drag, swipe, or use the arrow buttons to rotate.</p>
+          </>
+        )}
       </div>
 
       <ProjectModal project={selected} onClose={() => setSelected(null)} />
