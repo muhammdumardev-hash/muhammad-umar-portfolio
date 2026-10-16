@@ -235,28 +235,7 @@ export const internships = [
   },
 ]
 
-export const certifications = [
-  {
-    title: 'Generative and Agentic AI Application Developer',
-    issuer: 'Pak Angels',
-    detail: 'Cohort 11 · Aug–Oct 2026 · Top Performer award',
-  },
-  {
-    title: 'AI/ML Internship Completion Certificate',
-    issuer: 'Big Brains',
-    detail: 'Issued 16 September 2026 · Average score 98%',
-  },
-  {
-    title: 'Generative AI Internship Completion Certificate',
-    issuer: 'Big Brains',
-    detail: 'Issued 14 October 2026 · Average score 99%',
-  },
-  {
-    title: 'Cyber Security Workshop',
-    issuer: 'Certificate of Participation',
-    detail: 'Workshop participation certificate',
-  },
-]
+
 
 export const education = {
   school: 'University of Management and Technology (UMT)',
