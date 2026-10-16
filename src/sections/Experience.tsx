@@ -1,9 +1,12 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Briefcase, Award, Heart, ExternalLink } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading'
 import { internships, volunteering } from '../data/config'
 
 export default function Experience() {
+  const [activeCertificate, setActiveCertificate] = useState<{ title: string; src: string } | null>(null)
+
   return (
     <section
       id="experience"
@@ -55,18 +58,37 @@ export default function Experience() {
                         { label: 'Offer Letter', file: 'BigBrains-OfferLetter-BB-752F7637F47C.png' },
                         { label: 'Completion Certificate', file: 'BigBrains-Certificate-BB-06A8AB4282A9.png' },
                       ]
-                  ).map((document) => (
-                    <a
-                      key={document.label}
-                      href={`/certificates/${internship.role === 'AI/ML Intern' ? 'big-brains-ai-ml' : 'big-brains-generative-ai'}/${document.file}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-md border border-[var(--color-border)] px-3 py-2 text-xs font-medium text-[var(--color-accent)] transition-colors hover:bg-[var(--color-accent-soft)]"
-                    >
-                      {document.label}
-                      <ExternalLink size={12} />
-                    </a>
-                  ))}
+                  ).map((document) => {
+                    const folder = internship.role === 'AI/ML Intern' ? 'big-brains-ai-ml' : 'big-brains-generative-ai'
+                    const documentUrl = `/certificates/${folder}/${document.file}`
+
+                    if (document.label === 'Completion Certificate') {
+                      return (
+                        <button
+                          key={document.label}
+                          type="button"
+                          onClick={() => setActiveCertificate({ title: `${internship.role} — Completion Certificate`, src: documentUrl })}
+                          className="inline-flex items-center gap-1.5 rounded-md border border-[var(--color-border)] px-3 py-2 text-xs font-medium text-[var(--color-accent)] transition-colors hover:bg-[var(--color-accent-soft)]"
+                        >
+                          View Certificate
+                          <ExternalLink size={12} />
+                        </button>
+                      )
+                    }
+
+                    return (
+                      <a
+                        key={document.label}
+                        href={documentUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-md border border-[var(--color-border)] px-3 py-2 text-xs font-medium text-[var(--color-accent)] transition-colors hover:bg-[var(--color-accent-soft)]"
+                      >
+                        {document.label}
+                        <ExternalLink size={12} />
+                      </a>
+                    )
+                  })}
                 </div>
               </motion.div>
             ))}
@@ -119,6 +141,39 @@ export default function Experience() {
             </motion.div>
           </div>
         </div>
+
+        {activeCertificate && (
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label={activeCertificate.title}
+            onClick={() => setActiveCertificate(null)}
+          >
+            <div
+              className="relative flex max-h-[92vh] w-full max-w-5xl flex-col rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-4 sm:p-6"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <h3 className="font-semibold text-white">{activeCertificate.title}</h3>
+                <button
+                  type="button"
+                  onClick={() => setActiveCertificate(null)}
+                  className="rounded-md border border-[var(--color-border)] px-3 py-2 text-sm text-[var(--color-text)] hover:bg-[var(--color-accent-soft)]"
+                >
+                  Close
+                </button>
+              </div>
+              <div className="min-h-0 overflow-auto">
+                <img
+                  src={activeCertificate.src}
+                  alt={activeCertificate.title}
+                  className="mx-auto h-auto max-h-[75vh] w-auto max-w-full rounded-md object-contain"
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Volunteering */}
         <motion.div
