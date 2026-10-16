@@ -21,8 +21,8 @@ export const siteConfig = {
    * Place your CV PDF at: public/cv/Muhammad_Umar_CV.pdf
    * Then set cvPath below. Until then the button shows a placeholder state.
    */
-  cvPath: '/cv/Muhammad_Umar_CV.pdf',
-  cvAvailable: false, // set to true once you add the PDF
+  cvPath: '/cv/UMAR_CV.pdf',
+  cvAvailable: true, // CV PDF is available in public/cv/
 } as const
 
 export type ProjectCategory = 'All' | 'Generative AI' | 'Machine Learning' | 'Web/Automation'
