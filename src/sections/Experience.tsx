@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Briefcase, Award, Heart } from 'lucide-react'
+import { Briefcase, Award, Heart, ExternalLink } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading'
 import { internships, volunteering } from '../data/config'
 
@@ -44,6 +44,30 @@ export default function Experience() {
                   {internship.description}
                 </p>
                 <p className="mt-3 text-xs text-[var(--color-text-dim)]">{internship.certificate}</p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  {(internship.role === 'AI/ML Intern'
+                    ? [
+                        { label: 'Offer Letter', file: 'BigBrains-OfferLetter-BB-89C2D0548B23.png' },
+                        { label: 'Completion Certificate', file: 'BigBrains-Certificate-BB-3E1E5004CA3D.png' },
+                        { label: 'Recommendation Letter', file: 'BigBrains-RecommendationLetter-BB-C981812C0E04%20(1).png' },
+                      ]
+                    : [
+                        { label: 'Offer Letter', file: 'BigBrains-OfferLetter-BB-752F7637F47C.png' },
+                        { label: 'Completion Certificate', file: 'BigBrains-Certificate-BB-06A8AB4282A9.png' },
+                      ]
+                  ).map((document) => (
+                    <a
+                      key={document.label}
+                      href={`/certificates/${internship.role === 'AI/ML Intern' ? 'big-brains-ai-ml' : 'big-brains-generative-ai'}/${document.file}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-md border border-[var(--color-border)] px-3 py-2 text-xs font-medium text-[var(--color-accent)] transition-colors hover:bg-[var(--color-accent-soft)]"
+                    >
+                      {document.label}
+                      <ExternalLink size={12} />
+                    </a>
+                  ))}
+                </div>
               </motion.div>
             ))}
           </div>
