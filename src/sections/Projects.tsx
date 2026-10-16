@@ -71,8 +71,8 @@ export default function Projects() {
           </div>
         </div>
 
-        {/* Continuously rotating 3D project carousel */}
-        <AnimatePresence mode="wait">
+        {/* Grid */}
+        <AnimatePresence mode="popLayout">
           {filtered.length === 0 ? (
             <motion.p
               key="empty"
@@ -84,57 +84,95 @@ export default function Projects() {
               No projects match your filters.
             </motion.p>
           ) : (
-            <motion.div
-              key={filtered.map((project) => project.id).join('-')}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="project-carousel-stage"
-              aria-label="Rotating selected projects"
-            >
-              <div className="project-carousel-ring" style={{ '--project-count': filtered.length } as React.CSSProperties}>
-                {filtered.map((project, i) => {
-                  const angle = (360 / filtered.length) * i
-                  return (
-                    <article
-                      key={project.id}
-                      className="project-carousel-card group flex flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] transition hover:border-[var(--color-accent)]/60 hover:shadow-lg hover:shadow-indigo-500/10"
-                      style={{ transform: `translate(-50%, -50%) rotateY(${angle}deg) translateZ(var(--project-carousel-radius)) rotateY(-${angle}deg)` }}
-                    >
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {filtered.map((project, i) => (
+                <motion.article
+                  key={project.id}
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ duration: 0.35, delay: i * 0.05 }}
+                  className="group flex flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] transition hover:border-[var(--color-accent)]/40 hover:shadow-lg hover:shadow-indigo-500/5"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setSelected(project)}
+                    className="relative block h-36 w-full overflow-hidden text-left"
+                    aria-label={`View details: ${project.title}`}
+                  >
+                    <ProjectVisual type={project.visual} accent={project.accent} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-card)] via-transparent to-transparent opacity-80" />
+                  </button>
+
+                  <div className="flex flex-1 flex-col p-5">
+                    <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-accent)]">
+                      {project.category}
+                    </p>
+                    <h3 className="mt-1 text-base font-semibold text-white group-hover:text-[var(--color-accent-hover)]">
                       <button
                         type="button"
                         onClick={() => setSelected(project)}
-                        className="relative block h-36 w-full shrink-0 overflow-hidden text-left"
-                        aria-label={`View details: ${project.title}`}
+                        className="text-left focus-visible:underline"
                       >
-                        <ProjectVisual type={project.visual} accent={project.accent} />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-card)] via-transparent to-transparent opacity-80" />
+                        {project.title}
                       </button>
-                      <div className="flex flex-1 flex-col p-5">
-                        <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-accent)]">{project.category}</p>
-                        <h3 className="mt-1 text-base font-semibold text-white group-hover:text-[var(--color-accent-hover)]">
-                          <button type="button" onClick={() => setSelected(project)} className="text-left focus-visible:underline">{project.title}</button>
-                        </h3>
-                        <p className="mt-2 flex-1 text-sm leading-relaxed text-[var(--color-text-muted)]">{project.shortDescription}</p>
-                        <div className="mt-3 flex flex-wrap gap-1.5">
-                          {project.tech.slice(0, 4).map((t) => (
-                            <span key={t} className="rounded border border-[var(--color-border)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--color-text-dim)]">{t}</span>
-                          ))}
-                          {project.tech.length > 4 && <span className="rounded border border-[var(--color-border)] px-1.5 py-0.5 text-[10px] text-[var(--color-text-dim)]">+{project.tech.length - 4}</span>}
-                        </div>
-                        <div className="mt-4 flex flex-wrap gap-2 border-t border-[var(--color-border-subtle)] pt-4">
-                          <button type="button" onClick={() => setSelected(project)} className="text-xs font-medium text-[var(--color-accent)] hover:underline">Details →</button>
-                          <div className="ml-auto flex gap-2">
-                            {project.demoUrl ? <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-md border border-[var(--color-border)] px-2 py-1 text-xs text-[var(--color-text-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"><ExternalLink size={12} /> Demo</a> : null}
-                            {project.codeUrl ? <a href={project.codeUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-md border border-[var(--color-border)] px-2 py-1 text-xs text-[var(--color-text-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"><Github size={12} /> Code</a> : null}
-                          </div>
-                        </div>
+                    </h3>
+                    <p className="mt-2 flex-1 text-sm leading-relaxed text-[var(--color-text-muted)]">
+                      {project.shortDescription}
+                    </p>
+
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {project.tech.slice(0, 4).map((t) => (
+                        <span
+                          key={t}
+                          className="rounded border border-[var(--color-border)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--color-text-dim)]"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                      {project.tech.length > 4 && (
+                        <span className="rounded border border-[var(--color-border)] px-1.5 py-0.5 text-[10px] text-[var(--color-text-dim)]">
+                          +{project.tech.length - 4}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap gap-2 border-t border-[var(--color-border-subtle)] pt-4">
+                      <button
+                        type="button"
+                        onClick={() => setSelected(project)}
+                        className="text-xs font-medium text-[var(--color-accent)] hover:underline"
+                      >
+                        Details →
+                      </button>
+                      <div className="ml-auto flex gap-2">
+                        {project.demoUrl ? (
+                          <a
+                            href={project.demoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 rounded-md border border-[var(--color-border)] px-2 py-1 text-xs text-[var(--color-text-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                          >
+                            <ExternalLink size={12} /> Demo
+                          </a>
+                        ) : null}
+                        {project.codeUrl ? (
+                          <a
+                            href={project.codeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 rounded-md border border-[var(--color-border)] px-2 py-1 text-xs text-[var(--color-text-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                          >
+                            <Github size={12} /> Code
+                          </a>
+                        ) : null}
                       </div>
-                    </article>
-                  )
-                })}
-              </div>
-            </motion.div>
+                    </div>
+                  </div>
+                </motion.article>
+              ))}
+            </div>
           )}
         </AnimatePresence>
       </div>
