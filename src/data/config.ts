@@ -86,7 +86,7 @@ export const projects: Project[] = [
     ],
     tech: ['Python', 'Streamlit', 'PyMuPDF', 'Sentence Transformers', 'FAISS', 'Groq API'],
     category: 'Generative AI',
-    demoUrl: '',
+    demoUrl: 'https://hospital-rag-assistant-arg7co7qdhslq9d98qrajg.streamlit.app/',
     codeUrl: '',
     accent: '#06b6d4',
     visual: 'hospital',
