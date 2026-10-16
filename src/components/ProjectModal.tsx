@@ -1,8 +1,10 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ExternalLink, Github, Code2 } from 'lucide-react'
 import type { Project } from '../data/config'
 import ProjectVisual from './ProjectVisual'
+
+const ProjectOrbitPreview = lazy(() => import('./ProjectOrbitPreview'))
 
 interface ProjectModalProps {
   project: Project | null
@@ -62,6 +64,17 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             </div>
 
             <div className="overflow-y-auto px-5 pb-6 pt-2 sm:px-8">
+              {project.orbitPreview !== false && (
+                <Suspense
+                  fallback={
+                    <div className="mb-5 flex h-64 items-center justify-center rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)] text-sm text-[var(--color-text-dim)]">
+                      Loading interactive preview…
+                    </div>
+                  }
+                >
+                  <ProjectOrbitPreview project={project} />
+                </Suspense>
+              )}
               <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-accent)]">
                 {project.category}
               </p>
