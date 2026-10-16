@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
-import { Briefcase, Award, Heart, GraduationCap } from 'lucide-react'
+import { Briefcase, Award, Heart } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading'
-import { internships, certifications, education, volunteering } from '../data/config'
+import { internships, volunteering } from '../data/config'
 
 export default function Experience() {
   return (
@@ -12,8 +12,8 @@ export default function Experience() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="Experience & Credentials"
-          title="Internships, training & education"
-          description="Hands-on AI/ML and Generative AI experience, formal training, and academic progress."
+          title="Internships, training & certifications"
+          description="Practical AI/ML experience, Generative and Agentic AI training, and professional certifications."
         />
 
         <div className="grid gap-8 lg:grid-cols-2">
@@ -48,49 +48,52 @@ export default function Experience() {
             ))}
           </div>
 
-          {/* Education */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.45, delay: 0.08 }}
-            className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6"
-          >
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
-                <GraduationCap size={20} />
+          {/* Training & Certifications */}
+          <div className="grid gap-4">
+            {/* Pak Angels Training */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.45, delay: 0.08 }}
+              className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6"
+            >
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
+                  <Award size={20} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white">Generative and Agentic AI Application Developer</h3>
+                  <p className="text-sm text-[var(--color-text-muted)]">Pak Angels · Cohort 11</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-white">{education.degree}</h3>
-                <p className="text-sm text-[var(--color-text-muted)]">
-                  {education.school} · {education.period}
-                </p>
-              </div>
-            </div>
-            <p className="text-sm text-[var(--color-text-muted)]">{education.note}</p>
-          </motion.div>
+              <p className="text-sm leading-relaxed text-[var(--color-text-muted)]">
+                Aug–Oct 2026 · Top Performer award
+              </p>
+            </motion.div>
 
-          {/* Pak Angels Training */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.45, delay: 0.12 }}
-            className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6"
-          >
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
-                <Award size={20} />
+            {/* Cyber Security Workshop */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.45, delay: 0.12 }}
+              className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6"
+            >
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
+                  <Award size={20} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white">Cyber Security Workshop</h3>
+                  <p className="text-sm text-[var(--color-text-muted)]">Certificate of Participation</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-white">Generative and Agentic AI Application Developer</h3>
-                <p className="text-sm text-[var(--color-text-muted)]">Pak Angels · Cohort 11</p>
-              </div>
-            </div>
-            <p className="text-sm leading-relaxed text-[var(--color-text-muted)]">
-              Aug–Oct 2026 · Top Performer award
-            </p>
-          </motion.div>
+              <p className="text-sm leading-relaxed text-[var(--color-text-muted)]">
+                Workshop participation certificate
+              </p>
+            </motion.div>
+          </div>
         </div>
 
         {/* Volunteering */}
