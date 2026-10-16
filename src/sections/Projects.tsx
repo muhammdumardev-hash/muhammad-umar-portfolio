@@ -53,7 +53,10 @@ export default function Projects() {
   }
 
   const openProject = (project: Project) => {
-    if (dragMoved.current) return
+    if (dragMoved.current) {
+      dragMoved.current = false
+      return
+    }
     setSelected(project)
   }
 
