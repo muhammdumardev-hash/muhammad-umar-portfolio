@@ -231,6 +231,11 @@ export const certifications = [
     detail: 'Cohort 11 · Aug–Oct 2026 · Top Performer award',
   },
   {
+    title: 'AI/ML Internship Completion Certificate',
+    issuer: 'Big Brains',
+    detail: 'Issued 16 September 2026 · Average score 98%',
+  },
+  {
     title: 'Generative AI Internship Completion Certificate',
     issuer: 'Big Brains',
     detail: 'Issued 14 October 2026 · Average score 99%',
