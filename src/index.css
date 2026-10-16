@@ -148,7 +148,7 @@ body {
   margin: 0 auto;
   transform-style: preserve-3d;
   will-change: transform;
-  transition: transform 1350ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: transform 1800ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .projects-3d-card {
@@ -166,7 +166,7 @@ body {
   text-align: left;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  transition: border-color 500ms ease, opacity 900ms ease, box-shadow 500ms ease;
+  transition: border-color 700ms ease, opacity 1500ms ease, box-shadow 700ms ease;
 }
 
 .projects-3d-card.is-active {
