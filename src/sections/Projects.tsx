@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react'
 import { ExternalLink, Github, Search } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading'
 import ProjectModal from '../components/ProjectModal'
@@ -57,7 +57,7 @@ export default function Projects() {
     setDragOffset(0)
   }
 
-  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (filtered.length < 2 || event.button > 0) return
     dragRef.current = {
       active: true,
