@@ -69,33 +69,29 @@ export default function Experience() {
             </div>
             <p className="text-sm text-[var(--color-text-muted)]">{education.note}</p>
           </motion.div>
-        </div>
 
-        {/* Certifications */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-40px' }}
-          transition={{ duration: 0.45, delay: 0.1 }}
-          className="mt-8"
-        >
-          <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-white">
-            <Award size={20} className="text-[var(--color-accent)]" />
-            Training & Certifications
-          </h3>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {certifications.map((c) => (
-              <div
-                key={c.title}
-                className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-5 transition hover:border-[var(--color-accent)]/30"
-              >
-                <h4 className="text-sm font-semibold text-white">{c.title}</h4>
-                <p className="mt-1 text-xs text-[var(--color-accent)]">{c.issuer}</p>
-                <p className="mt-2 text-xs text-[var(--color-text-dim)]">{c.detail}</p>
+          {/* Pak Angels Training */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.45, delay: 0.12 }}
+            className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6"
+          >
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
+                <Award size={20} />
               </div>
-            ))}
-          </div>
-        </motion.div>
+              <div>
+                <h3 className="font-semibold text-white">Generative and Agentic AI Application Developer</h3>
+                <p className="text-sm text-[var(--color-text-muted)]">Pak Angels · Cohort 11</p>
+              </div>
+            </div>
+            <p className="text-sm leading-relaxed text-[var(--color-text-muted)]">
+              Aug–Oct 2026 · Top Performer award
+            </p>
+          </motion.div>
+        </div>
 
         {/* Volunteering */}
         <motion.div
