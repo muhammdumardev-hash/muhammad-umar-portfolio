@@ -128,11 +128,11 @@ export default function Projects() {
               onPointerMove={moveDrag}
               onPointerUp={endDrag}
               onPointerCancel={endDrag}
-              style={{ transform: `rotateY(${dragRotation}deg)` }}
               role="region"
               aria-label="Continuously rotating project carousel"
             >
-              <div className="project-orbit-track">
+              <div className="project-orbit-drag-layer" style={{ transform: `rotateY(${dragRotation}deg)` }}>
+                <div className="project-orbit-track">
                 {filtered.map((project, i) => {
                   const angle = (360 / filtered.length) * i
                   return (
@@ -190,7 +190,9 @@ export default function Projects() {
                   )
                 })}
               </div>
-              <div className="project-orbit-glow" aria-hidden="true" />
+                  <div className="project-orbit-glow" aria-hidden="true" />
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
