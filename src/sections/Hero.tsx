@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import { ArrowDown, Download, Mail, Sparkles } from 'lucide-react'
 import { siteConfig } from '../data/config'
-import NetworkVisual from '../components/NetworkVisual'
 
 const container = {
   hidden: { opacity: 0 },
@@ -98,12 +97,12 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Right: animated network visual */}
+        {/* Right: profile photo */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, delay: 0.3 }}
-          className="relative mx-auto hidden w-full max-w-md lg:block"
+          className="relative mx-auto w-full max-w-md"
         >
           <div className="relative aspect-square">
             <div
@@ -113,7 +112,11 @@ export default function Hero() {
                   'radial-gradient(circle, rgba(99,102,241,0.35) 0%, transparent 70%)',
               }}
             />
-            <NetworkVisual />
+            <img
+              src="/myimg.jpg"
+              alt="Muhammad Umar"
+              className="relative h-full w-full rounded-full border-4 border-[var(--color-accent)]/40 object-cover object-center shadow-2xl shadow-indigo-500/20"
+            />
           </div>
         </motion.div>
       </div>
