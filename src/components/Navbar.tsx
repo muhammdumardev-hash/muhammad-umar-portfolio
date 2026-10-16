@@ -47,9 +47,11 @@ export default function Navbar({ activeSection }: NavbarProps) {
           }}
           className="group flex items-center gap-2 font-semibold tracking-tight"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-accent-soft)] text-sm font-bold text-[var(--color-accent)] ring-1 ring-[var(--color-accent)]/30">
-            MU
-          </span>
+          <img
+            src="/myimg.jpg"
+            alt="Muhammad Umar"
+            className="h-8 w-8 rounded-full object-cover ring-1 ring-[var(--color-accent)]/40"
+          />
           <span className="hidden text-[var(--color-text)] sm:inline group-hover:text-white transition-colors">
             {siteConfig.name}
           </span>
