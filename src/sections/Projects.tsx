@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ExternalLink, Github, Search } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading'
@@ -12,6 +12,10 @@ export default function Projects() {
   const [filter, setFilter] = useState<ProjectCategory>('All')
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<Project | null>(null)
+  const [dragRotation, setDragRotation] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const dragStart = useRef({ x: 0, rotation: 0 })
+  const dragMoved = useRef(false)
 
   const filtered = useMemo(() => {
     return projects.filter((p) => {
@@ -26,8 +30,35 @@ export default function Projects() {
     })
   }, [filter, query])
 
+  const startDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return
+    dragMoved.current = false
+    dragStart.current = { x: event.clientX, rotation: dragRotation }
+    setIsDragging(true)
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  const moveDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging) return
+    const delta = event.clientX - dragStart.current.x
+    if (Math.abs(delta) > 5) dragMoved.current = true
+    setDragRotation(dragStart.current.rotation + delta * 0.55)
+  }
+
+  const endDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    setIsDragging(false)
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+  }
+
+  const openProject = (project: Project) => {
+    if (dragMoved.current) return
+    setSelected(project)
+  }
+
   return (
-    <section id="projects" className="relative py-20 sm:py-28">
+    <section id="projects" className="relative overflow-hidden py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="Projects"
@@ -36,7 +67,7 @@ export default function Projects() {
         />
 
         {/* Filters + search */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap gap-2" role="tablist" aria-label="Project categories">
             {categories.map((cat) => (
               <button
@@ -71,8 +102,11 @@ export default function Projects() {
           </div>
         </div>
 
-        {/* Grid */}
-        <AnimatePresence mode="popLayout">
+        <p className="mb-1 text-center text-xs text-[var(--color-text-dim)]">
+          Drag to rotate · Hover to pause · Select a project for details
+        </p>
+
+        <AnimatePresence mode="wait">
           {filtered.length === 0 ? (
             <motion.p
               key="empty"
@@ -84,95 +118,80 @@ export default function Projects() {
               No projects match your filters.
             </motion.p>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((project, i) => (
-                <motion.article
-                  key={project.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ duration: 0.35, delay: i * 0.05 }}
-                  className="group flex flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] transition hover:border-[var(--color-accent)]/40 hover:shadow-lg hover:shadow-indigo-500/5"
-                >
-                  <button
-                    type="button"
-                    onClick={() => setSelected(project)}
-                    className="relative block h-36 w-full overflow-hidden text-left"
-                    aria-label={`View details: ${project.title}`}
-                  >
-                    <ProjectVisual type={project.visual} accent={project.accent} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-card)] via-transparent to-transparent opacity-80" />
-                  </button>
-
-                  <div className="flex flex-1 flex-col p-5">
-                    <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-accent)]">
-                      {project.category}
-                    </p>
-                    <h3 className="mt-1 text-base font-semibold text-white group-hover:text-[var(--color-accent-hover)]">
+            <motion.div
+              key={filtered.map((project) => project.id).join('-')}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className={`project-orbit-scene ${isDragging ? 'is-dragging' : ''}`}
+              onPointerDown={startDrag}
+              onPointerMove={moveDrag}
+              onPointerUp={endDrag}
+              onPointerCancel={endDrag}
+              style={{ transform: `rotateY(${dragRotation}deg)` }}
+              role="region"
+              aria-label="Continuously rotating project carousel"
+            >
+              <div className="project-orbit-track">
+                {filtered.map((project, i) => {
+                  const angle = (360 / filtered.length) * i
+                  return (
+                    <article
+                      key={project.id}
+                      className="project-orbit-card group"
+                      style={{ transform: `translate(-50%, -50%) rotateY(${angle}deg) translateZ(var(--project-orbit-radius))` }}
+                    >
                       <button
                         type="button"
-                        onClick={() => setSelected(project)}
-                        className="text-left focus-visible:underline"
+                        onClick={() => openProject(project)}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter' || event.key === ' ') openProject(project)
+                        }}
+                        className="block h-40 w-full overflow-hidden rounded-t-2xl text-left"
+                        aria-label={`View details: ${project.title}`}
                       >
-                        {project.title}
+                        <ProjectVisual type={project.visual} accent={project.accent} />
                       </button>
-                    </h3>
-                    <p className="mt-2 flex-1 text-sm leading-relaxed text-[var(--color-text-muted)]">
-                      {project.shortDescription}
-                    </p>
-
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {project.tech.slice(0, 4).map((t) => (
-                        <span
-                          key={t}
-                          className="rounded border border-[var(--color-border)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--color-text-dim)]"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                      {project.tech.length > 4 && (
-                        <span className="rounded border border-[var(--color-border)] px-1.5 py-0.5 text-[10px] text-[var(--color-text-dim)]">
-                          +{project.tech.length - 4}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="mt-4 flex flex-wrap gap-2 border-t border-[var(--color-border-subtle)] pt-4">
-                      <button
-                        type="button"
-                        onClick={() => setSelected(project)}
-                        className="text-xs font-medium text-[var(--color-accent)] hover:underline"
-                      >
-                        Details →
-                      </button>
-                      <div className="ml-auto flex gap-2">
-                        {project.demoUrl ? (
-                          <a
-                            href={project.demoUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 rounded-md border border-[var(--color-border)] px-2 py-1 text-xs text-[var(--color-text-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                      <div className="flex min-h-0 flex-1 flex-col p-5">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--color-accent-hover)]">
+                          {project.category}
+                        </p>
+                        <h3 className="mt-2 text-lg font-semibold leading-snug text-white">
+                          {project.title}
+                        </h3>
+                        <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-[var(--color-text-muted)]">
+                          {project.shortDescription}
+                        </p>
+                        <div className="mt-4 flex flex-wrap gap-1.5">
+                          {project.tech.slice(0, 3).map((tech) => (
+                            <span
+                              key={tech}
+                              className="rounded-md border border-[var(--color-border)] bg-black/10 px-2 py-1 text-[10px] text-[var(--color-text-dim)]"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                        <div className="mt-4 flex items-center justify-between border-t border-[var(--color-border-subtle)] pt-3">
+                          <button
+                            type="button"
+                            onClick={() => openProject(project)}
+                            className="text-xs font-semibold text-[var(--color-accent-hover)] hover:text-white"
                           >
-                            <ExternalLink size={12} /> Demo
-                          </a>
-                        ) : null}
-                        {project.codeUrl ? (
-                          <a
-                            href={project.codeUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 rounded-md border border-[var(--color-border)] px-2 py-1 text-xs text-[var(--color-text-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
-                          >
-                            <Github size={12} /> Code
-                          </a>
-                        ) : null}
+                            Explore project ↗
+                          </button>
+                          <div className="flex items-center gap-2 text-[var(--color-text-dim)]">
+                            {project.demoUrl && <ExternalLink size={13} aria-label="Demo available" />}
+                            {project.codeUrl && <Github size={13} aria-label="Code available" />}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </motion.article>
-              ))}
-            </div>
+                    </article>
+                  )
+                })}
+              </div>
+              <div className="project-orbit-glow" aria-hidden="true" />
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
