@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
 import { ExternalLink, Github, Search } from 'lucide-react'
 import SectionHeading from '../components/SectionHeading'
 import ProjectModal from '../components/ProjectModal'
@@ -174,7 +174,7 @@ export default function Projects() {
                         opacity: Math.max(0.32, 1 - distance / (step * 1.8)),
                         zIndex: isActive ? 2 : 1,
                         ['--project-accent' as string]: project.accent,
-                      }}
+                      } as CSSProperties}
                       onClick={(event) => {
                         if (!isActive) {
                           event.preventDefault()
