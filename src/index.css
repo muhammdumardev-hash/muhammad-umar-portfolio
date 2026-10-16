@@ -116,3 +116,80 @@ body {
   mask-composite: exclude;
   pointer-events: none;
 }
+
+
+/* 3D continuously rotating Projects carousel */
+.project-orbit-scene {
+  --project-orbit-radius: 350px;
+  position: relative;
+  height: 500px;
+  margin: 0 auto;
+  max-width: 100%;
+  overflow: hidden;
+  perspective: 1400px;
+  transform-style: preserve-3d;
+  cursor: grab;
+  touch-action: pan-y;
+  isolation: isolate;
+}
+.project-orbit-scene:active { cursor: grabbing; }
+.project-orbit-track {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: project-orbit-spin 34s linear infinite;
+}
+.project-orbit-scene:hover .project-orbit-track,
+.project-orbit-scene.is-dragging .project-orbit-track {
+  animation-play-state: paused;
+}
+.project-orbit-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  width: min(320px, 76vw);
+  height: 390px;
+  overflow: hidden;
+  border: 1px solid rgba(99, 102, 241, 0.32);
+  border-radius: 1rem;
+  background: linear-gradient(155deg, rgba(15, 23, 42, 0.98), rgba(8, 12, 24, 0.98));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.38), 0 0 32px rgba(99, 102, 241, 0.08);
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  transition: border-color 220ms ease, box-shadow 220ms ease;
+}
+.project-orbit-card:hover {
+  border-color: rgba(139, 92, 246, 0.8);
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.48), 0 0 36px rgba(99, 102, 241, 0.18);
+}
+.project-orbit-glow {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 50%;
+  width: 65%;
+  height: 55%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(99, 102, 241, 0.14), rgba(139, 92, 246, 0.05) 45%, transparent 72%);
+  filter: blur(24px);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+@keyframes project-orbit-spin {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+@media (max-width: 640px) {
+  .project-orbit-scene {
+    --project-orbit-radius: 225px;
+    height: 455px;
+    perspective: 1000px;
+  }
+  .project-orbit-card { width: min(290px, 78vw); height: 375px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-orbit-track { animation: none; }
+  .project-orbit-card { transition: none; }
+}
