@@ -183,7 +183,7 @@ export const projects: Project[] = [
     codeUrl: '',
     accent: '#22c55e',
     visual: 'whatsapp',
-  },,
+  },
   {
     id: 'advanced-rag-hybrid-search',
     title: 'Advanced RAG with Hybrid Search',
