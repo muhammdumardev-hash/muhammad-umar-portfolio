@@ -94,6 +94,29 @@ export const projects: Project[] = [
     visual: 'hospital',
   },
   {
+    id: 'threatlens',
+    title: 'ThreatLens — AI Cybersecurity Threat Analyzer',
+    shortDescription:
+      'Analyzes URLs, domains, and IP addresses using threat intelligence sources with AI-generated explanations.',
+    problem:
+      'Checking whether a URL, domain, or IP address may be malicious often requires using several separate security tools and interpreting their results manually.',
+    solution:
+      'Built a Python and Streamlit application that combines VirusTotal threat-detection results, WHOIS/RDAP information, and Groq AI explanations in one interface.',
+    features: [
+      'Scan URLs, domains, and IP addresses',
+      'VirusTotal threat intelligence lookup',
+      'WHOIS/RDAP domain and IP information',
+      'AI-generated explanations of scan results',
+      'Interactive Streamlit interface',
+    ],
+    tech: ['Python', 'Streamlit', 'VirusTotal API', 'Groq API', 'WHOIS/RDAP', 'Requests', 'python-whois', 'ipwhois'],
+    category: 'Generative AI',
+    demoUrl: 'https://threat-lens-application.streamlit.app/',
+    codeUrl: '',
+    accent: '#ef4444',
+    visual: 'hospital',
+  },
+  {
     id: 'dropout-prediction',
     title: 'Student Dropout Prediction System',
     shortDescription:
