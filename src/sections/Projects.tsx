@@ -58,6 +58,8 @@ export default function Projects() {
   }
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement
+    if (target.closest('button, a, input')) return
     if (filtered.length < 2 || event.button > 0) return
     dragRef.current = {
       active: true,
@@ -170,25 +172,24 @@ export default function Projects() {
                       key={project.id}
                       className={'projects-3d-card' + (isActive ? ' is-active' : '')}
                       style={{
-                        transform: 'rotateY(' + angle + 'deg) translateZ(' + radius + 'px)',
+                        transform: 'rotateY(' + angle + 'deg) translateZ(' + radius + 'px) rotateY(' + -angle + 'deg)',
                         opacity: Math.max(0.32, 1 - distance / (step * 1.8)),
                         zIndex: isActive ? 2 : 1,
                         ['--project-accent' as string]: project.accent,
                       } as CSSProperties}
                       onClick={(event) => {
-                        if (!isActive) {
-                          event.preventDefault()
-                          goTo(index)
-                        }
+                        const target = event.target as HTMLElement
+                        if (target.closest('button, a')) return
+                        if (!isActive) goTo(index)
                       }}
                       aria-label={project.title}
                     >
                       <button
                         type="button"
                         className="projects-3d-visual"
-                        onClick={() => {
-                          if (isActive) setSelected(project)
-                          else goTo(index)
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          setSelected(project)
                         }}
                         aria-label={isActive ? 'View details: ' + project.title : 'Select ' + project.title}
                         tabIndex={isActive ? 0 : -1}
@@ -213,9 +214,9 @@ export default function Projects() {
                           <button
                             type="button"
                             className="projects-3d-details"
-                            onClick={() => {
-                              if (isActive) setSelected(project)
-                              else goTo(index)
+                            onClick={(event) => {
+                              event.stopPropagation()
+                              setSelected(project)
                             }}
                           >
                             Details <span aria-hidden="true">→</span>
