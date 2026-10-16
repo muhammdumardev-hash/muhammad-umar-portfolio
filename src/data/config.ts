@@ -214,15 +214,26 @@ export const skillCategories = [
   },
 ] as const
 
-export const experience = {
-  role: 'Generative AI Intern',
-  company: 'Big Brains',
-  period: '2026',
-  status: 'Completed',
-  description:
-    'Completed a Generative AI internship focused on practical LLM applications. Worked with prompt engineering, embeddings, vector search, RAG pipelines, Python, Streamlit, and AI APIs to build knowledge-grounded support systems.',
-  certificate: 'Internship Completion Certificate — average score 99% (issued 14 October 2026)',
-}
+export const internships = [
+  {
+    role: 'AI/ML Intern',
+    company: 'Big Brains',
+    period: '2026',
+    status: 'Completed',
+    description:
+      'Completed an AI/ML internship focused on practical machine learning concepts and applications.',
+    certificate: 'Internship Completion Certificate — average score 98% (issued 16 September 2026)',
+  },
+  {
+    role: 'Generative AI Intern',
+    company: 'Big Brains',
+    period: '2026',
+    status: 'Completed',
+    description:
+      'Completed a Generative AI internship focused on practical LLM applications. Worked with prompt engineering, embeddings, vector search, RAG pipelines, Python, Streamlit, and AI APIs to build knowledge-grounded support systems.',
+    certificate: 'Internship Completion Certificate — average score 99% (issued 14 October 2026)',
+  },
+]
 
 export const certifications = [
   {
