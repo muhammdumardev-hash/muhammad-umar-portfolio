@@ -142,7 +142,7 @@ export const projects: Project[] = [
     id: 'ecommerce-agent',
     title: 'E-commerce Customer Support AI Agent',
     shortDescription:
-      'AI customer support agent that answers product questions and privacy, return, refund, and shipping policy queries; tracks demo orders (ORD-GRW-2026-1 to ORD-GRW-2026-500); escalates unresolved requests by creating unique support tickets; and provides an admin panel to review tickets, reply to customers, and update ticket statuses. Supabase stores queries, tickets, and chat history. Admin panel code: Umar8423.',
+      'AI customer support agent that answers product questions and privacy, return, refund, and shipping policy queries; tracks demo orders (ORD-GRW-2026-1 to ORD-GRW-2026-500); escalates unresolved requests by creating unique support tickets; and provides an admin panel to review tickets, reply to customers, and update ticket statuses. Supabase stores queries, tickets, and chat history. Demo admin panel code: Umar8423.',
     problem:
       'E-commerce support teams handle repetitive product, order, and policy questions while complex or unresolved requests still need to reach a human support representative.',
     solution:
