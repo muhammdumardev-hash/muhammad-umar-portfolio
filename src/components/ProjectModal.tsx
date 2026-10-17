@@ -150,11 +150,11 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                   >
                     <Github size={16} /> View Code
                   </a>
-                ) : (
+                ) : !['hospital-rag', 'ecommerce-agent', 'dropout-prediction'].includes(project.id) ? (
                   <span className="inline-flex items-center gap-2 rounded-lg border border-[var(--color-border)] px-4 py-2.5 text-sm text-[var(--color-text-dim)]">
                     <Github size={16} /> Code unavailable
                   </span>
-                )}
+                ) : null}
               </div>
             </div>
           </motion.div>
