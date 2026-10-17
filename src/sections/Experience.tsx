@@ -114,8 +114,24 @@ export default function Experience() {
                 </div>
               </div>
               <p className="text-sm leading-relaxed text-[var(--color-text-muted)]">
-                Aug–Oct 2026 · Top Performer award
+                Completed the six-week Generative and Agentic AI training program, gaining hands-on experience with LLM-powered assistants, RAG, tool calling, multi-agent workflows, and AI automation. Built practical AI projects using modern APIs and frameworks. Recognized as a Top Performer.
               </p>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs text-[var(--color-text-dim)]">
+                {['Generative AI', 'Agentic AI', 'RAG', 'Tool Calling', 'Multi-Agent Systems', 'AI Automation'].map((tag) => (
+                  <span key={tag} className="rounded-md border border-[var(--color-border)] px-2 py-1">{tag}</span>
+                ))}
+              </div>
+              <p className="mt-3 text-xs text-[var(--color-text-dim)]">Aug–Oct 2026 · Certificate issued 7 October 2026 · Top Performer</p>
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => setActiveCertificate({ title: 'Pak Angels — Generative and Agentic AI Application Developer', src: '/certificates/PAGAI-TP-0766.png' })}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-[var(--color-border)] px-3 py-2 text-xs font-medium text-[var(--color-accent)] transition-colors hover:bg-[var(--color-accent-soft)]"
+                >
+                  View Certificate
+                  <ExternalLink size={12} />
+                </button>
+              </div>
             </motion.div>
 
             {/* Cyber Security Workshop */}
