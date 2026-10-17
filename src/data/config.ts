@@ -142,11 +142,11 @@ export const projects: Project[] = [
     id: 'ecommerce-agent',
     title: 'E-commerce Customer Support AI Agent',
     shortDescription:
-      'Answers e-commerce customer queries and checks order status from CSV data. Try sample order ID: ORD-GRW-2026-1.',
+      'Answers e-commerce customer queries and checks order status from CSV data. Try any sample order ID from ORD-GRW-2026-1 to ORD-GRW-2026-500.',
     problem:
       'E-commerce support teams face repetitive questions about orders, policies, and products that can be automated with grounded AI.',
     solution:
-      'Built a Streamlit support agent using ChromaDB, Groq, and uploaded CSV order data to answer product/policy questions and check order status. To test order tracking, ask: “Check the status of order ORD-GRW-2026-1”.',
+      'Built a Streamlit support agent using ChromaDB, Groq, and uploaded CSV order data to answer product/policy questions and check order status. To test order tracking, use any order ID from ORD-GRW-2026-1 to ORD-GRW-2026-500, for example: “Check the status of order ORD-GRW-2026-1”.',
     features: [
       'RAG over product and policy knowledge base',
       'Context-aware conversational responses',
